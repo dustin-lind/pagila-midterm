@@ -10,3 +10,27 @@
  * NOTE:
  * Your results should not contain any duplicate titles.
  */
+SELECT DISTINCT
+    f.title
+FROM film f
+JOIN film_actor fa ON(f.film_id = fa.film_id)
+JOIN ( 
+    SELECT
+        *,
+        first_name || ' ' || last_name as "actor_name"
+    FROM actor
+) a ON(fa.actor_id = a.actor_id) 
+JOIN inventory i ON(f.film_id = i.film_id)
+JOIN rental r ON(i.inventory_id = r.inventory_id)
+JOIN (
+    SELECT
+        *,
+        first_name || ' ' || last_name as "customer_name"
+    FROM customer
+) c ON(r.customer_id = c.customer_id)
+WHERE
+    (f.title NOT LIKE '%F%') AND
+    (a.actor_name NOT LIKE '%F%') AND
+    (c.customer_name NOT LIKE '%F%')
+ORDER BY f.title;
+    
